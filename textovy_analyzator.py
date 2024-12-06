@@ -41,26 +41,34 @@ uzivatele = {"bob":"123",
 
 #pomocne promenne
 cara = 40 * "-"
-cisla_textu = (1,2,3)
-
 
 #Beh programu
 username = input("username:")
 password = input("password:")
 
 if username in uzivatele.keys() and password == uzivatele[username]:
+     #spocitani mnozstvi textu k analyze
+     pocet_textu = len(TEXTS)
+     cisla_textu = range(1,pocet_textu+1)
+
      #privitani uzivatele
      print(cara)
-     print(f"Welcome to the app, {username} \nWe have 3 texts to be analyzed.")
+     print(f"Welcome to the app, {username} \nWe have {pocet_textu} texts to be analyzed.")
      print(cara)
 
      #volba textu k analyze
-     poradi_textu = int(input("Enter a number btw. 1 and 3 to select: "))
-     if poradi_textu in cisla_textu:
+     poradi_textu = input(f"Enter a number btw. 1 and {pocet_textu} to select: ")
+
+     #ukonceni pokud uzivatel nazada cislo
+     if poradi_textu.isnumeric() == False:
+          print("Not a number, terminating programm..")
+
+     #hlavni telo analyzy
+     elif int(poradi_textu) in cisla_textu:
           print(cara)
 
           #rozdeleni textu na jednotliva slova a ocisteni o specialni znaky
-          vybrany_text = TEXTS[poradi_textu-1]
+          vybrany_text = TEXTS[int(poradi_textu)-1]
           slova = [slovo.strip(r",.:;'") for slovo in vybrany_text.split()]
           
           #pocet slov v textu
@@ -89,11 +97,7 @@ if username in uzivatele.keys() and password == uzivatele[username]:
                soucet += int(cislo)
           print("The sum of all numbers is", soucet)
           
-          #graf poctu delek jednotlivych slov
-          print(cara)
-          print("LEN|  OCCURENCES  |NR.")
-          print(cara)
-
+          ##tvorba grafu poctu delek jednotlivych slov##########
           #vypocet poctu slov pro ruzne delky
           my_dict = {}
           for slovo in slova:
@@ -105,9 +109,19 @@ if username in uzivatele.keys() and password == uzivatele[username]:
               else:
                   my_dict[delka] += 1
           
+          #zjisteni maximalniho poctu slov u jedne delky (potrebuji pro graf)
+          max_pocet_slov = max(my_dict.values())
+          delka_pred_hlavickou = len("  OCCURENCES")
+          sloupec_v_hlavicce = max_pocet_slov - delka_pred_hlavickou
+          
+          #print hlavicky
+          print(cara)
+          print(f"LEN|  OCCURENCES{'' :<{sloupec_v_hlavicce}}|NR.", sep="")
+          print(cara)
+
           #print vysledneho grafu
           for keys,values in sorted(my_dict.items()):
-               print(f"{keys: >3}", "|", f"{values * "*": <14}", "|", values, sep="")
+               print(f"{keys: >3}", "|", f"{values * "*": <{max_pocet_slov}}", "|", values, sep="")
 
      #ukonceni pokud uzivatel zada neexistujici cislo textu
      else:
